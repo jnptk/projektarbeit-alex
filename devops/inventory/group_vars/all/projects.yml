@@ -1,0 +1,7 @@
+---
+project_folders:
+  # Path to store projektarbeit.example.com postgres data
+  - path: "/srv/projektarbeit/data"
+    owner: 999
+    group: 999
+    mode: "0750"

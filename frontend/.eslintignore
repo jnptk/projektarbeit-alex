@@ -1,0 +1,6 @@
+src/addons/**/node_modules
+src/addons/**/cypress
+src/addons/**/build
+
+!src/addons/volto-projektarbeit
+!src/addons/Tagmanager

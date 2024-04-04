@@ -1,0 +1,19 @@
+{
+  "portal": [
+    {
+      "email": "collective@plone.org",
+      "properties": {
+        "fullname": "Projektarbeit",
+        "location": "World"
+      },
+      "groups": [
+      ],
+      "roles": [
+        "Member"
+      ],
+      "username": "projektarbeit"
+    }
+  ],
+    "team": [
+  ]
+}

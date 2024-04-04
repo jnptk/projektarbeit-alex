@@ -1,0 +1,8 @@
+{
+  "volto-projektarbeit": {
+    "local": "addons/volto-projektarbeit/src"
+  },
+  "Tagmanager": {
+    "local": "addons/Tagmanager/src"
+  }
+}
