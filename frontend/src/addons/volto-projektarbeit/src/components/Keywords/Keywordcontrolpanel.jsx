@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getKeywords, patchKeywords, deleteKeywords } from '../../actions';
+import trashcansvg from '@plone/volto/icons/delete.svg';
+import { Icon as VoltoIcon } from '@plone/volto/components';
 
-import { Button, Checkbox, Icon, Container } from 'semantic-ui-react';
+import {
+  Button,
+  Checkbox,
+  Icon,
+  Container,
+  Modal,
+  ModalHeader,
+  ModalActions,
+  ModalContent,
+  List,
+  ListItem,
+} from 'semantic-ui-react';
 
 const KeywordControlPanel = () => {
   const dispatch = useDispatch();
@@ -13,6 +26,7 @@ const KeywordControlPanel = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [mode, setMode] = useState('');
   const [selectedChangeto, setSelectedChangeto] = useState('');
+  const [showModal, setshowModal] = useState(false);
 
   function removeKeywords(keyword) {
     let indexToRemove = selectedKeywords.indexOf(keyword);
@@ -25,6 +39,83 @@ const KeywordControlPanel = () => {
 
   return (
     <Container>
+      <Modal open={showModal}>
+        {(mode === 'delete' || mode === '') && (
+          <>
+            <ModalHeader>Warning</ModalHeader>
+            <ModalContent text>
+              Really delete{' '}
+              <List>
+                {selectedKeywords.map((keyword, index) => (
+                  <ListItem key={index}>
+                    {keyword}
+                    {/* {' ,'} */}
+                  </ListItem>
+                ))}
+              </List>{' '}
+              ?
+            </ModalContent>
+            <ModalActions>
+              <Button
+                color="black"
+                onClick={() => {
+                  setshowModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="red"
+                onClick={() => {
+                  dispatch(deleteKeywords(selectedKeywords));
+                  setSelectedKeywords([]);
+                  setshowModal(false);
+                }}
+              >
+                Delete
+              </Button>
+            </ModalActions>
+          </>
+        )}
+        {mode === 'change' && (
+          <>
+            <ModalHeader>Warning</ModalHeader>
+            <ModalContent text>
+              Really Overwrite{' '}
+              <List>
+                {selectedKeywords.map((keyword) => (
+                  <ListItem>
+                    {keyword}
+                    {' ,'}
+                  </ListItem>
+                ))}
+              </List>{' '}
+              with {selectedChangeto} ?
+            </ModalContent>
+            <ModalActions>
+              <Button
+                color="black"
+                onClick={() => {
+                  setshowModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="red"
+                onClick={() => {
+                  dispatch(patchKeywords(selectedKeywords, selectedChangeto));
+                  setSelectedKeywords([]);
+                  setshowModal(false);
+                }}
+              >
+                Overwrite
+              </Button>
+            </ModalActions>
+          </>
+        )}
+      </Modal>
+
       <span>
         <h1>Keywordmanager</h1>
         <label htmlFor="keyword">Enter Keyword: </label>
@@ -40,7 +131,7 @@ const KeywordControlPanel = () => {
             mode === 'change' ? setMode('') : setMode('change');
           }}
         >
-          Ändern
+          Change
         </Button>
         <Button
           toggle
@@ -49,29 +140,35 @@ const KeywordControlPanel = () => {
             mode === 'delete' ? setMode('') : setMode('delete');
           }}
         >
-          Löschen
+          Delete
         </Button>
       </span>
-
-      <h2>
-        {mode === '' &&
-          keywords.map((keyword, index) => (
-            <React.Fragment key={index}>
-              <span>{keyword.Keywordname}</span>
-              <Button
-                class="miniDeleteButton"
-                onClick={() => dispatch(deleteKeywords([keyword.Keywordname]))}
-              >
-                <Icon name="delete" />
-              </Button>
-              <br />
-            </React.Fragment>
-          ))}
-
-        {(mode === 'delete' || mode === 'change') &&
-          keywords.map((keyword, index) => (
-            <div key={index}>
-              <span>
+      {/*  */}
+      <div>
+        {mode === '' && (
+          <List horizontal>
+            {keywords.map((keyword, index) => (
+              <ListItem key={index}>
+                {keyword.Keywordname}
+                <Button
+                  circular
+                  size="mini"
+                  class="miniDeleteButton"
+                  onClick={() => {
+                    setSelectedKeywords([keyword.Keywordname]);
+                    setshowModal(true);
+                  }}
+                >
+                  <VoltoIcon name={trashcansvg} size="18px" color="red" />
+                </Button>
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {(mode === 'delete' || mode === 'change') && (
+          <List horizontal>
+            {keywords.map((keyword, index) => (
+              <ListItem key={index}>
                 {keyword.Keywordname}
                 <Checkbox
                   onChange={(e, data) => {
@@ -83,15 +180,15 @@ const KeywordControlPanel = () => {
                       : removeKeywords(keyword.Keywordname);
                   }}
                 />
-              </span>
-              <br />
-            </div>
-          ))}
-      </h2>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </div>
 
       {mode === 'change' && (
         <div>
-          <label>Enter the new Keyword: </label>
+          <label>Enter the new Keyword you wish to change to: </label>
           <input
             type="text"
             id="changeto"
@@ -101,29 +198,12 @@ const KeywordControlPanel = () => {
             }}
           />
 
-          <Button
-            onClick={() =>
-              dispatch(patchKeywords(selectedKeywords, selectedChangeto))
-            }
-          >
-            Ändern
-          </Button>
+          <Button onClick={() => setshowModal(true)}>Change</Button>
         </div>
       )}
       {mode === 'delete' && (
         <div>
-          <label>Enter Keyword you wish to delete</label>
-          <input
-            type="text"
-            id="keyword"
-            name="keyword"
-            onChange={(e) => {
-              setSelectedKeywords(e.target.value);
-            }}
-          />
-          <Button onClick={() => dispatch(deleteKeywords(selectedKeywords))}>
-            Löschen
-          </Button>
+          <Button onClick={() => setshowModal(true)}>Delete</Button>
         </div>
       )}
     </Container>
