@@ -62,7 +62,7 @@ class Tags(Service):
         request_body = json.loads(self.request.get("BODY"))
 
         old_keywords = request_body.get("keywords")
-        old_keywords = [tag.strip() for tag in old_keywords.split(",")]
+
         new_keyword = request_body.get("changeto")
         changedItems = 0
 
@@ -118,11 +118,11 @@ class Tags(Service):
         request_body = json.loads(self.request.get("BODY"))
 
         keywords = request_body.get("keywords")
-        keywords = [tag.strip() for tag in keywords.split(",")]
+
         context = None
         indexName = "Subject"
         changedItems = 0
-        # breakpoint()
+
         for keyword in keywords:
             query = {indexName: keyword}
             if context is not None:

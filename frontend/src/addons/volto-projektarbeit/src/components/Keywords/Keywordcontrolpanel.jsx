@@ -2,56 +2,95 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getKeywords, patchKeywords, deleteKeywords } from '../../actions';
 
-import { Button } from 'semantic-ui-react';
+import { Button, Checkbox, Icon, Container } from 'semantic-ui-react';
 
 const KeywordControlPanel = () => {
   const dispatch = useDispatch();
-  useEffect(() => dispatch(getKeywords('')), []);
+  useEffect(() => dispatch(getKeywords('')), [dispatch]);
 
   const keywords = useSelector((state) => state.keywords?.items) || [];
 
-  const [selectedKeywords, setSelectedKeywords] = useState('');
+  const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [mode, setMode] = useState('');
   const [selectedChangeto, setSelectedChangeto] = useState('');
 
+  function removeKeywords(keyword) {
+    let indexToRemove = selectedKeywords.indexOf(keyword);
+
+    selectedKeywords.splice(indexToRemove, 1);
+    setSelectedKeywords(selectedKeywords);
+  }
   keywords[0]?.Levenshtein &&
     keywords.sort((a, b) => a.Levenshtein - b.Levenshtein);
 
   return (
-    <>
+    <Container>
       <span>
         <h1>Keywordmanager</h1>
-        <Button onClick={() => setMode('change')}>Ändern</Button>
-        <Button onClick={() => setMode('delete')}>Löschen</Button>
+        <label htmlFor="keyword">Enter Keyword: </label>
+        <input
+          onChange={(e) => {
+            dispatch(getKeywords(e.target.value));
+          }}
+        />
+        <Button
+          toggle
+          active={mode === 'change'}
+          onClick={() => {
+            mode === 'change' ? setMode('') : setMode('change');
+          }}
+        >
+          Ändern
+        </Button>
+        <Button
+          toggle
+          active={mode === 'delete'}
+          onClick={() => {
+            mode === 'delete' ? setMode('') : setMode('delete');
+          }}
+        >
+          Löschen
+        </Button>
       </span>
 
-      <label htmlFor="keyword">Enter Keyword: </label>
-      <input
-        onChange={(e) => {
-          dispatch(getKeywords(e.target.value));
-        }}
-      />
       <h2>
-        {keywords.map((keyword, index) => (
-          <React.Fragment key={index}>
-            <span>{keyword.Keywordname}</span>
-            <br />
-          </React.Fragment>
-        ))}
+        {mode === '' &&
+          keywords.map((keyword, index) => (
+            <React.Fragment key={index}>
+              <span>{keyword.Keywordname}</span>
+              <Button
+                class="miniDeleteButton"
+                onClick={() => dispatch(deleteKeywords([keyword.Keywordname]))}
+              >
+                <Icon name="delete" />
+              </Button>
+              <br />
+            </React.Fragment>
+          ))}
+
+        {(mode === 'delete' || mode === 'change') &&
+          keywords.map((keyword, index) => (
+            <div key={index}>
+              <span>
+                {keyword.Keywordname}
+                <Checkbox
+                  onChange={(e, data) => {
+                    data.checked
+                      ? setSelectedKeywords([
+                          ...selectedKeywords,
+                          keyword.Keywordname,
+                        ])
+                      : removeKeywords(keyword.Keywordname);
+                  }}
+                />
+              </span>
+              <br />
+            </div>
+          ))}
       </h2>
 
       {mode === 'change' && (
         <div>
-          <label>Enter Keywords you wish to change: </label>
-          <input
-            type="text"
-            id="keywords"
-            name="keywords"
-            onChange={(e) => {
-              setSelectedKeywords(e.target.value);
-            }}
-          />
-          <br />
           <label>Enter the new Keyword: </label>
           <input
             type="text"
@@ -61,7 +100,7 @@ const KeywordControlPanel = () => {
               setSelectedChangeto(e.target.value);
             }}
           />
-          <br />
+
           <Button
             onClick={() =>
               dispatch(patchKeywords(selectedKeywords, selectedChangeto))
@@ -87,7 +126,7 @@ const KeywordControlPanel = () => {
           </Button>
         </div>
       )}
-    </>
+    </Container>
   );
 };
 
