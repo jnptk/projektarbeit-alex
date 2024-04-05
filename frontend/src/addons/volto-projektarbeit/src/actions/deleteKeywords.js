@@ -4,8 +4,9 @@ export default function deleteKeywords(keywords) {
   return {
     type: DELETE_KEYWORDS,
     request: {
-      op: 'delete',
+      op: 'del',
       path: '/@Tags',
+      data: { keywords: keywords },
     },
   };
 }

@@ -64,7 +64,6 @@ class Tags(Service):
         old_keywords = request_body.get("keywords")
         old_keywords = [tag.strip() for tag in old_keywords.split(",")]
         new_keyword = request_body.get("changeto")
-        msg = ""
         changedItems = 0
 
         for old_keyword in old_keywords:
@@ -80,9 +79,6 @@ class Tags(Service):
                 ]
                 query["Subject"] = old_keyword
                 querySet = api.content.find(**query)
-
-            if len(querySet) == 0:
-                msg += f"No Subject known with Keyword %s! " % old_keyword
 
             for item in querySet:
                 obj = item.getObject()
@@ -102,8 +98,8 @@ class Tags(Service):
                 else:
                     # MONOVALUED FIELD
                     value = new_keyword
-                self.updateObject(obj, indexName, value)
-                breakpoint()
+                self.updateObject(obj, indexName, value, old_keyword)
+
                 changedItems += len(querySet)
         items = self.getAllKeywords()
 
@@ -125,22 +121,25 @@ class Tags(Service):
         keywords = [tag.strip() for tag in keywords.split(",")]
         context = None
         indexName = "Subject"
-        msg = ""
-
+        changedItems = 0
+        # breakpoint()
         for keyword in keywords:
             query = {indexName: keyword}
             if context is not None:
                 query["path"] = "/".join(context.getPhysicalPath())
-            querySet = api.content.find(**query)
 
-            if len(querySet) == 0:
-                msg += f"No Subject known with Keyword %s! " % keyword
-                break
+            try:
+                querySet = api.content.find(**query)
+            except UnicodeDecodeError:
+                old_keyword = [
+                    k.decode("utf8") if isinstance(k, str) else k for k in old_keyword
+                ]
+                query["Subject"] = old_keyword
+                querySet = api.content.find(**query)
 
             for item in querySet:
                 obj = item.getObject()
                 value = self.getFieldValue(obj, indexName)
-                # breakpoint()
                 if isinstance(value, (list, tuple)):
                     # MULTIVALUED
                     value = set(value)
@@ -152,12 +151,12 @@ class Tags(Service):
                     # MONOVALUED
                     value = None
 
-                self.updateObject(obj, indexName, value)
-        if len(querySet) > 0:
-            msg += f"Removed %s Keyword(s)" % len(querySet)
+                self.updateObject(obj, indexName, value, keyword)
+                changedItems += len(querySet)
+        items = self.getAllKeywords()
         resp_obj = {
-            "items": self.getAllKeywords(),
-            "msg": msg,
+            "items": items,
+            "changedItems": changedItems,
         }
 
         return resp_obj
@@ -229,12 +228,15 @@ class Tags(Service):
         else:
             return fieldVal
 
-    def updateObject(self, obj, indexName, value):
+    def updateObject(self, obj, indexName, value, newKeyword):
         updateField = self.getSetter(obj, indexName)
         if updateField is not None:
             updateField(value)
             idxs = self._getFullIndexList(indexName)
             obj.reindexObject(idxs=idxs)
+            if newKeyword:
+                catalog = api.portal.get_tool("portal_catalog")
+                catalog(Subject=newKeyword)
 
     def getSetter(self, obj, indexName):
         """Gets the setter function for the field based on the index name.

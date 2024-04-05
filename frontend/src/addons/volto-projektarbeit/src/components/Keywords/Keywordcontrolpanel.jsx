@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getKeywords, patchKeywords } from '../../actions';
+import { getKeywords, patchKeywords, deleteKeywords } from '../../actions';
 
 import { Button } from 'semantic-ui-react';
 
 const KeywordControlPanel = () => {
   const dispatch = useDispatch();
   useEffect(() => dispatch(getKeywords('')), []);
-  // useEffect(() => dispatch(patchKeywords(), [patchKeywords]));
+
   const keywords = useSelector((state) => state.keywords?.items) || [];
-  // const [showSearch, setShowSearch] = useState(true);
-  // const [showChange, setShowChange] = useState(false);
-  // const [showDelete, setShowDelete] = useState(false);
+
   const [selectedKeywords, setSelectedKeywords] = useState('');
-  const [mode, setMode] = useState('change');
+  const [mode, setMode] = useState('');
   const [selectedChangeto, setSelectedChangeto] = useState('');
 
   keywords[0]?.Levenshtein &&
     keywords.sort((a, b) => a.Levenshtein - b.Levenshtein);
+
   return (
     <>
       <span>
@@ -70,16 +69,22 @@ const KeywordControlPanel = () => {
           >
             Ändern
           </Button>
-          {/* <span>
-
-          </span> */}
         </div>
       )}
       {mode === 'delete' && (
         <div>
           <label>Enter Keyword you wish to delete</label>
-          <input type="text" id="keyword" name="keyword" />
-          <input type="submit" value="submit" />
+          <input
+            type="text"
+            id="keyword"
+            name="keyword"
+            onChange={(e) => {
+              setSelectedKeywords(e.target.value);
+            }}
+          />
+          <Button onClick={() => dispatch(deleteKeywords(selectedKeywords))}>
+            Löschen
+          </Button>
         </div>
       )}
     </>

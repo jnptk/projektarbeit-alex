@@ -1,7 +1,7 @@
 import {
   GET_KEYWORDS,
   PATCH_KEYWORDS,
-  // DELETE_KEYWORDS,
+  DELETE_KEYWORDS,
 } from '../constants/ActionTypes';
 
 const initialState = {
@@ -53,6 +53,29 @@ export default function keywords(state = initialState, action = {}) {
         changeItems: action.result.changedItems,
       };
     case `${PATCH_KEYWORDS}_FAIL`:
+      return {
+        ...state,
+        error: action.error,
+        loading: false,
+        loaded: false,
+      };
+    case `${DELETE_KEYWORDS}_PENDING`:
+      return {
+        ...state,
+        error: null,
+        loading: true,
+        loaded: false,
+      };
+    case `${DELETE_KEYWORDS}_SUCCESS`:
+      return {
+        ...state,
+        error: null,
+        loading: false,
+        loaded: true,
+        items: action.result.items,
+        changeItems: action.result.changedItems,
+      };
+    case `${DELETE_KEYWORDS}_FAIL`:
       return {
         ...state,
         error: action.error,

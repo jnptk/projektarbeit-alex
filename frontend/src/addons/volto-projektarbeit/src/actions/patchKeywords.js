@@ -6,8 +6,6 @@ export default function patchKeywords(keywords, changeto) {
     request: {
       op: 'patch',
       path: '/@Tags',
-      // data: {`"keywords":"${keywords}","changeto":"${changeto}`},
-      // body : {}
       data: { keywords: keywords, changeto: changeto },
     },
   };
