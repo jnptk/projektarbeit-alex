@@ -7,7 +7,6 @@ import { Icon as VoltoIcon } from '@plone/volto/components';
 import {
   Button,
   Checkbox,
-  Icon,
   Container,
   Modal,
   ModalHeader,
@@ -15,7 +14,11 @@ import {
   ModalContent,
   List,
   ListItem,
+  ButtonGroup,
+  Input,
 } from 'semantic-ui-react';
+
+import './styles.css';
 
 const KeywordControlPanel = () => {
   const dispatch = useDispatch();
@@ -47,10 +50,7 @@ const KeywordControlPanel = () => {
               Really delete{' '}
               <List>
                 {selectedKeywords.map((keyword, index) => (
-                  <ListItem key={index}>
-                    {keyword}
-                    {/* {' ,'} */}
-                  </ListItem>
+                  <ListItem key={index}>{keyword}</ListItem>
                 ))}
               </List>{' '}
               ?
@@ -118,78 +118,86 @@ const KeywordControlPanel = () => {
 
       <span>
         <h1>Keywordmanager</h1>
+
         <label htmlFor="keyword">Enter Keyword: </label>
-        <input
+        <Input
           onChange={(e) => {
             dispatch(getKeywords(e.target.value));
           }}
         />
-        <Button
-          toggle
-          active={mode === 'change'}
-          onClick={() => {
-            mode === 'change' ? setMode('') : setMode('change');
-          }}
-        >
-          Change
-        </Button>
-        <Button
-          toggle
-          active={mode === 'delete'}
-          onClick={() => {
-            mode === 'delete' ? setMode('') : setMode('delete');
-          }}
-        >
-          Delete
-        </Button>
+        <ButtonGroup floated="right">
+          <Button
+            toggle
+            attached="left"
+            active={mode === 'change'}
+            onClick={() => {
+              mode === 'change' ? setMode('') : setMode('change');
+            }}
+          >
+            Change
+          </Button>
+          <Button
+            toggle
+            attached="right"
+            active={mode === 'delete'}
+            onClick={() => {
+              mode === 'delete' ? setMode('') : setMode('delete');
+            }}
+          >
+            Delete
+          </Button>
+        </ButtonGroup>
       </span>
       {/*  */}
-      <div>
-        {mode === '' && (
-          <List horizontal>
-            {keywords.map((keyword, index) => (
-              <ListItem key={index}>
-                {keyword.Keywordname}
-                <Button
-                  circular
-                  size="mini"
-                  class="miniDeleteButton"
-                  onClick={() => {
-                    setSelectedKeywords([keyword.Keywordname]);
-                    setshowModal(true);
-                  }}
-                >
-                  <VoltoIcon name={trashcansvg} size="18px" color="red" />
-                </Button>
-              </ListItem>
-            ))}
-          </List>
-        )}
-        {(mode === 'delete' || mode === 'change') && (
-          <List horizontal>
-            {keywords.map((keyword, index) => (
-              <ListItem key={index}>
-                {keyword.Keywordname}
-                <Checkbox
-                  onChange={(e, data) => {
-                    data.checked
-                      ? setSelectedKeywords([
-                          ...selectedKeywords,
-                          keyword.Keywordname,
-                        ])
-                      : removeKeywords(keyword.Keywordname);
-                  }}
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
+      <div class="keyword-list">
+        <List horizontal>
+          {keywords.map((keyword, index) => (
+            <ListItem key={index}>
+              <div class="keyword">
+                {mode === 'delete' || mode === 'change' ? (
+                  <>
+                    <text className="keywords-special">
+                      {keyword.Keywordname}
+                    </text>
+                    <Checkbox
+                      fitted="false"
+                      className="keyword-checkbox"
+                      onChange={(e, data) => {
+                        data.checked
+                          ? setSelectedKeywords([
+                              ...selectedKeywords,
+                              keyword.Keywordname,
+                            ])
+                          : removeKeywords(keyword.Keywordname);
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <text>{keyword.Keywordname}</text>
+                    <Button
+                      size="mini"
+                      class="miniDeleteButton"
+                      onClick={() => {
+                        setSelectedKeywords([keyword.Keywordname]);
+                        setshowModal(true);
+                      }}
+                    >
+                      <VoltoIcon name={trashcansvg} size="18px" color="red" />
+                    </Button>
+                  </>
+                )}
+              </div>
+            </ListItem>
+          ))}
+        </List>
       </div>
 
       {mode === 'change' && (
         <div>
           <label>Enter the new Keyword you wish to change to: </label>
-          <input
+          <Input
+            className="changeto-bar"
             type="text"
             id="changeto"
             name="changeto"
