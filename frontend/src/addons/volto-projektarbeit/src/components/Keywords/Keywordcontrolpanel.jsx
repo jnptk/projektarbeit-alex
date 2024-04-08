@@ -48,9 +48,11 @@ const KeywordControlPanel = () => {
             <ModalHeader>Warning</ModalHeader>
             <ModalContent text>
               Really delete{' '}
-              <List>
+              <List horizontal>
                 {selectedKeywords.map((keyword, index) => (
-                  <ListItem key={index}>{keyword}</ListItem>
+                  <ListItem key={index}>
+                    <text className="keywords-modal">{keyword}</text>
+                  </ListItem>
                 ))}
               </List>{' '}
               ?
@@ -82,15 +84,14 @@ const KeywordControlPanel = () => {
             <ModalHeader>Warning</ModalHeader>
             <ModalContent text>
               Really Overwrite{' '}
-              <List>
+              <List horizontal>
                 {selectedKeywords.map((keyword) => (
                   <ListItem>
-                    {keyword}
-                    {' ,'}
+                    <text className="keywords-modal">{keyword}</text>
                   </ListItem>
                 ))}
               </List>{' '}
-              with {selectedChangeto} ?
+              with <text className="keywords-modal">{selectedChangeto}</text> ?
             </ModalContent>
             <ModalActions>
               <Button
@@ -149,48 +150,46 @@ const KeywordControlPanel = () => {
         </ButtonGroup>
       </span>
       {/*  */}
-      <div class="keyword-list">
-        <List horizontal>
-          {keywords.map((keyword, index) => (
-            <ListItem key={index}>
-              <div class="keyword">
-                {mode === 'delete' || mode === 'change' ? (
-                  <>
-                    <text className="keywords-special">
-                      {keyword.Keywordname}
-                    </text>
-                    <Checkbox
-                      fitted="false"
-                      className="keyword-checkbox"
-                      onChange={(e, data) => {
-                        data.checked
-                          ? setSelectedKeywords([
-                              ...selectedKeywords,
-                              keyword.Keywordname,
-                            ])
-                          : removeKeywords(keyword.Keywordname);
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <text>{keyword.Keywordname}</text>
-                    <Button
-                      size="mini"
-                      class="miniDeleteButton"
-                      onClick={() => {
-                        setSelectedKeywords([keyword.Keywordname]);
-                        setshowModal(true);
-                      }}
-                    >
-                      <VoltoIcon name={trashcansvg} size="18px" color="red" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            </ListItem>
-          ))}
-        </List>
+      <div className="keyword-list">
+        {keywords.map((keyword, index) => (
+          <div className="tags" key={index}>
+            <div class="keyword">
+              {mode === 'delete' || mode === 'change' ? (
+                <>
+                  <text className="keywords-special">
+                    {keyword.Keywordname}
+                  </text>
+                  <Checkbox
+                    fitted="false"
+                    className="keyword-checkbox"
+                    onChange={(e, data) => {
+                      data.checked
+                        ? setSelectedKeywords([
+                            ...selectedKeywords,
+                            keyword.Keywordname,
+                          ])
+                        : removeKeywords(keyword.Keywordname);
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <text>{keyword.Keywordname}</text>
+                  <Button
+                    size="mini"
+                    className="miniDeleteButton"
+                    onClick={() => {
+                      setSelectedKeywords([keyword.Keywordname]);
+                      setshowModal(true);
+                    }}
+                  >
+                    <VoltoIcon name={trashcansvg} size="18px" color="red" />
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       {mode === 'change' && (

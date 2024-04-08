@@ -11,7 +11,11 @@ text {
   vertical-align: 3px;
 }
 text.keywords-special {
-  vertical-align: 11px;
+  vertical-align: 9px;
+}
+text.keywords-modal {
+  background-color: lightgray;
+  vertical-align: -1px;
 }
 button.ui.mini.button {
   padding-right: 3px;
@@ -41,4 +45,23 @@ button.ui.mini.button {
 }
 input.changeto-bar {
   padding-right: 6px;
+}
+
+.tags {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px;
+
+  .tag-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 }
