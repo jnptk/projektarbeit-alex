@@ -3,6 +3,6 @@ default_context:
     initial_user_password: 'admin'
     zcml_package_includes: 'projektarbeit'
     load_zcml:
-        package_includes: ["projektarbeit.addon"]
+        package_includes: ["projektarbeit"]
 
     db_storage: direct

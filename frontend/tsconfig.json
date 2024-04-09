@@ -37,7 +37,7 @@
     },
     "include": [
         "src"
-    ],
+, "cypress/tests/changeKeywords.cy.js"    ],
     "exclude": [
         "node_modules",
         "build",

@@ -18,7 +18,7 @@ import {
   Input,
 } from 'semantic-ui-react';
 
-import './styles.css';
+import './keywordcontrolpanel.css';
 
 const KeywordControlPanel = () => {
   const dispatch = useDispatch();

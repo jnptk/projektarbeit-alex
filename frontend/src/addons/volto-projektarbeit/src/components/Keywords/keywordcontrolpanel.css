@@ -1,0 +1,61 @@
+.keyword {
+  margin-bottom: 2px;
+  background-color: lightgray;
+}
+.keywords-special {
+  background-color: lightgray;
+}
+text {
+  padding-right: 3px;
+  padding-left: 3px;
+  vertical-align: 3px;
+}
+text.keywords-special {
+  vertical-align: 9px;
+}
+text.keywords-modal {
+  background-color: lightgray;
+  vertical-align: -1px;
+}
+button.ui.mini.button {
+  padding-right: 3px;
+  padding-left: 8px;
+  margin-right: 0em;
+}
+.keyword-list {
+  padding-bottom: 50px;
+
+  margin-top: 20px;
+}
+.ui.horizontal.list:not(.celled) > .item:first-child {
+  /* help me  */
+  margin-left: 1em !important;
+}
+.ui.right.floated.buttons {
+  margin-top: -35px;
+}
+.keyword-checkbox {
+  padding-top: 19px;
+  padding-right: 3px;
+  padding-bottom: 24px;
+  padding-left: 3px;
+  margin-top: -10px;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+input.changeto-bar {
+  padding-right: 6px;
+}
+
+.tags {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px;
+}
