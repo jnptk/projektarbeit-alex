@@ -21,7 +21,7 @@
   <include file="profiles.zcml" />
 
   <include package=".indexers" />
-  <include package=".api" />
+  <include package=".addon" />
   <include package=".vocabularies" />
   <include package=".behaviors" />
   <include package=".browser" />

@@ -1,5 +1,0 @@
-===================
-projektarbeit.addon
-===================
-
-User documentation

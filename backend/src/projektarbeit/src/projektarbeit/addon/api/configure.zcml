@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="projektarbeit">
+    
+    <plone:service
+        method="GET"
+        factory=".tags.Tags"
+        name="@Tags"
+        for="zope.interface.Interface"
+        permission="cmf.ManagePortal"
+    />
+    <plone:service
+        method="DELETE"
+        factory=".tags.Tags"
+        name="@Tags"
+        for="zope.interface.Interface"
+        permission="cmf.ManagePortal"
+    />
+    <plone:service
+        method="PATCH"
+        factory=".tags.Tags"
+        name="@Tags"
+        for="zope.interface.Interface"
+        permission="cmf.ManagePortal"
+    />
+
+</configure>
