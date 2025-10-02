@@ -1,7 +1,8 @@
 from AccessControl.SecurityManagement import newSecurityManager
+from plone.keywordmanager.interfaces import IBrowserLayer
 from Products.CMFPlone.factory import _DEFAULT_PROFILE
 from Products.CMFPlone.factory import addPloneSite
-from projektarbeit.interfaces import IProjektarbeitLayer
+from Products.GenericSetup.tool import SetupTool
 from Testing.makerequest import makerequest
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
@@ -26,14 +27,15 @@ def asbool(s):
 
 
 DELETE_EXISTING = asbool(os.getenv("DELETE_EXISTING"))
+EXAMPLE_CONTENT = asbool(os.getenv("EXAMPLE_CONTENT", "1"))
 
-app = makerequest(app)  # noQA
+app = makerequest(globals()["app"])
 
 request = app.REQUEST
 
-ifaces = [
-    IProjektarbeitLayer,
-] + list(directlyProvidedBy(request))
+ifaces = [IBrowserLayer]
+for iface in directlyProvidedBy(request):
+    ifaces.append(iface)
 
 directlyProvides(request, *ifaces)
 
@@ -43,15 +45,12 @@ newSecurityManager(None, admin)
 
 site_id = "Plone"
 payload = {
-    "title": "Projektarbeit",
+    "title": "Plone Keywordmanager",
     "profile_id": _DEFAULT_PROFILE,
-    "extension_ids": [
-        "projektarbeit:default",
-        "projektarbeit:initial",
-    ],
+    "distribution_name": "volto",
     "setup_content": False,
     "default_language": "en",
-    "portal_timezone": "America/Sao_Paulo",
+    "portal_timezone": "UTC",
 }
 
 if site_id in app.objectIds() and DELETE_EXISTING:
@@ -62,4 +61,14 @@ if site_id in app.objectIds() and DELETE_EXISTING:
 if site_id not in app.objectIds():
     site = addPloneSite(app, site_id, **payload)
     transaction.commit()
+
+    portal_setup: SetupTool = site.portal_setup
+    portal_setup.runAllImportStepsFromProfile("profile-plone.keywordmanager:default")
+    transaction.commit()
+
+    if EXAMPLE_CONTENT:
+        portal_setup.runAllImportStepsFromProfile(
+            "profile-plone.keywordmanager:initial"
+        )
+        transaction.commit()
     app._p_jar.sync()

@@ -1,0 +1,37 @@
+[repository]
+name = "plone-keywordmanager"
+managed_by_uv = false
+changelog = "CHANGELOG.md"
+version = "version.txt"
+compose = "docker-compose.yml"
+
+[repository.towncrier]
+section = "Project"
+settings = "towncrier.toml"
+
+[backend]
+path = "backend"
+
+[backend.package]
+name = "plone.keywordmanager"
+path = "backend"
+changelog = "backend/CHANGELOG.md"
+towncrier_settings = "backend/pyproject.toml"
+base_package = "Products.CMFPlone"
+publish = false
+
+[frontend]
+path = "frontend"
+
+[frontend.package]
+name = "volto-keywordmanager"
+path = "frontend/packages/volto-keywordmanager"
+changelog = "frontend/packages/volto-keywordmanager/CHANGELOG.md"
+towncrier_settings = "frontend/packages/volto-keywordmanager/towncrier.toml"
+base_package = "@plone/volto"
+publish = false
+
+[cookieplone]
+template = "project"
+template_version = "1d2012a950e4374f91c3f93e9531fde44b330ab3"
+generated_date = "2025-10-02 11:32:22"

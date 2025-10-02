@@ -1,5 +1,1 @@
--c constraints.txt
--e src/projektarbeit.addon
-
-zope.testrunner
-flake8-pyproject
+-c https://dist.plone.org/release/6.1.2/constraints.txt
